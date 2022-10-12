@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  photoUrl  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  deletedAt DateTime?
+  files     File[]
+  todo      Todo[]
+}
+
+model File {
+  id        String    @id @default(uuid())
+  name      String
+  namespace String
+  filetype  String
+  url       String
+  key       String
+  createdAt DateTime  @default(now())
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+  deletedAt DateTime?
+}
+
+model Todo {
+  id          String     @id @default(uuid())
+  description String
+  status      TodoStatus @default(TODO)
+  todoId      String?
+  todo        Todo?      @relation("todoId", fields: [todoId], references: [id])
+  subtasks    Todo[]     @relation("todoId")
+  user        User?      @relation(fields: [userId], references: [id])
+  userId      String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime?
+  expiredAt   DateTime?
+  deletedAt   DateTime?
+}
+
+enum TodoStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
