@@ -27,7 +27,6 @@ import {
   ApiUnprocessableEntityResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { User } from '@prisma/client';
 import { UserService } from '../providers/user.service';
 import { FilterUserDto } from '../dto/filter-user.dto';
 import { UserDto } from '../dto/user.dto';
@@ -36,6 +35,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { DefaultResponse } from '../../shared/responses/default.response';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from '../guards/jwt.guard';
+import { User } from '../decorators/user.decorator';
 
 @ApiTags('Users')
 @UseGuards(JwtGuard)
@@ -61,7 +61,7 @@ export class UserController {
     description: 'Id of user to find',
     example: '2c287ae8-ab38-4681-b3f7-2295c9402eeb',
   })
-  async getUser(@Param('id') id: string): Promise<User> {
+  async getUser(@Param('id') id: string): Promise<UserDto> {
     return this.userService.findUserById(id);
   }
 
@@ -114,7 +114,7 @@ export class UserController {
     return this.userService.deleteUser(id);
   }
 
-  @Post('/:id/upload-image')
+  @Post('/upload-image')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -129,9 +129,9 @@ export class UserController {
   })
   @UseInterceptors(FileInterceptor('file'))
   async saveFile(
-    @Param('id') id: string,
+    @User() user: UserDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<string> {
-    return this.userService.saveUserImage(id, file);
+    return this.userService.saveUserImage(user.id, file);
   }
 }

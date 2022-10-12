@@ -16,12 +16,13 @@ export class CreateTodoDto implements Partial<Todo> {
   @IsString()
   status: TodoStatus;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Id of user',
     example: '2c287ae8-ab38-4681-b3f7-2295c9402eeb',
   })
   @IsString()
-  userId: string;
+  @IsOptional()
+  userId?: string;
 
   @ApiPropertyOptional({ description: 'Expiration at of todo', example: '' })
   @IsDateString()

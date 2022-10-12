@@ -11,6 +11,7 @@ import { TodoDto } from '../dto/todo.dto';
 import { FilterTodoDto } from '../dto/filter-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 import { Prisma } from '@prisma/client';
+import { CreateSubtaskDto } from '../dto/create-subtask.dto';
 
 type PartialFilter = Partial<FilterTodoDto>;
 
@@ -22,7 +23,9 @@ export class TodoService {
     private readonly logger: AppLoggerService,
     private readonly prisma: PrismaService,
   ) {}
-  async createTodo(payload: CreateTodoDto): Promise<TodoDto> {
+  async createTodo(
+    payload: CreateTodoDto | CreateSubtaskDto,
+  ): Promise<TodoDto> {
     const context = {
       method: this.createTodo.name,
       payload,
@@ -35,7 +38,7 @@ export class TodoService {
       });
 
       const todo = await this.prisma.todo.create({
-        data: payload,
+        data: { ...payload },
         include: { subtasks: true },
       });
 
