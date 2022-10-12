@@ -14,6 +14,8 @@ import { Prisma } from '@prisma/client';
 import { CreateSubtaskDto } from '../dto/create-subtask.dto';
 
 type PartialFilter = Partial<FilterTodoDto>;
+type TodoId = { todoId: string };
+type UserId = { userId: string };
 
 @Injectable()
 export class TodoService {
@@ -24,7 +26,7 @@ export class TodoService {
     private readonly prisma: PrismaService,
   ) {}
   async createTodo(
-    payload: CreateTodoDto | CreateSubtaskDto,
+    payload: (CreateTodoDto & UserId) | (CreateTodoDto & TodoId & UserId),
   ): Promise<TodoDto> {
     const context = {
       method: this.createTodo.name,
@@ -76,7 +78,7 @@ export class TodoService {
 
       const todo = await this.prisma.todo.update({
         where: { id },
-        data: payload,
+        data: { ...payload, updatedAt: new Date() },
         include: { subtasks: true },
       });
 
@@ -111,6 +113,10 @@ export class TodoService {
     try {
       const { id } = query;
       const where: Prisma.TodoWhereInput = {};
+
+      where.todoId = {
+        equals: null,
+      };
 
       if (id) {
         where.id = {

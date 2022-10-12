@@ -47,7 +47,7 @@ export class FileService {
       message: 'Creating file record created',
     });
 
-    return eTag;
+    return url;
   }
 
   async readFile(filename: string): Promise<ReadFileDto> {

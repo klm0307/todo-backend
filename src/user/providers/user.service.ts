@@ -142,7 +142,7 @@ export class UserService {
 
       const user = await this.prisma.user.update({
         where: { id },
-        data: { ...payload },
+        data: { ...payload, updatedAt: new Date() },
       });
 
       this.logger.customLog(this.context, {
@@ -188,10 +188,14 @@ export class UserService {
   }
 
   async saveUserImage(id: string, file: Express.Multer.File) {
-    return this.fileService.saveFile({
+    const url = await this.fileService.saveFile({
       file,
       userId: id,
       namespace: FileNamespace.USER_NAMESPACE,
     });
+
+    await this.updateUser(id, { photoUrl: url });
+
+    return url;
   }
 }

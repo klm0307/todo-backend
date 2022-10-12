@@ -17,14 +17,10 @@ export class CreateTodoDto implements Partial<Todo> {
   status: TodoStatus;
 
   @ApiPropertyOptional({
-    description: 'Id of user',
-    example: '2c287ae8-ab38-4681-b3f7-2295c9402eeb',
+    description: 'Expiration at of todo',
+    example: '',
+    default: null,
   })
-  @IsString()
-  @IsOptional()
-  userId?: string;
-
-  @ApiPropertyOptional({ description: 'Expiration at of todo', example: '' })
   @IsDateString()
   @IsOptional()
   expiredAt?: Date;

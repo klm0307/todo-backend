@@ -14,11 +14,4 @@ export class CreateSubtaskDto extends CreateTodoDto {
   @IsDateString()
   @IsOptional()
   expiredAt?: Date;
-
-  @ApiProperty({
-    description: 'If a subtask this represent the todo parent id',
-    example: '2c287ae8-ab38-4681-b3f7-2295c9402eeb',
-  })
-  @IsString()
-  todoId: string;
 }

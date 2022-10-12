@@ -44,63 +44,24 @@ import { User } from '../decorators/user.decorator';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('me')
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiOkResponse({ type: UserDto })
-  @Get('me')
   async me(@Request() req): Promise<Partial<UserDto>> {
     return req.user;
   }
 
-  @Get(':id')
-  @ApiOkResponse({ type: UserDto })
-  @ApiNotFoundResponse(DefaultResponse.notFound)
-  @ApiUnauthorizedResponse(DefaultResponse.unauthorized)
-  @ApiParam({
-    type: 'string',
-    name: 'id',
-    description: 'Id of user to find',
-    example: '2c287ae8-ab38-4681-b3f7-2295c9402eeb',
-  })
-  async getUser(@Param('id') id: string): Promise<UserDto> {
-    return this.userService.findUserById(id);
-  }
-
-  @Get()
-  @ApiOkResponse({ type: [UserDto] })
-  @ApiUnauthorizedResponse(DefaultResponse.unauthorized)
-  @ApiBadRequestResponse(DefaultResponse.badRequest)
-  @ApiUnprocessableEntityResponse(DefaultResponse.unprocessableEntity)
-  getAllUsers(@Query() query: FilterUserDto) {
-    return this.userService.findAllUsers(query);
-  }
-
-  @Post()
-  @ApiCreatedResponse({ type: UserDto })
-  @ApiUnauthorizedResponse(DefaultResponse.unauthorized)
-  @ApiConflictResponse(DefaultResponse.conflict)
-  @ApiBadRequestResponse(DefaultResponse.badRequest)
-  @ApiUnprocessableEntityResponse(DefaultResponse.unprocessableEntity)
-  async createUser(@Body() payload: CreateUserDto) {
-    return this.userService.createUser(payload);
-  }
-
-  @Patch(':id')
+  @Patch()
   @ApiOkResponse({ type: UserDto })
   @ApiNotFoundResponse(DefaultResponse.notFound)
   @ApiUnauthorizedResponse(DefaultResponse.unauthorized)
   @ApiBadRequestResponse(DefaultResponse.badRequest)
   @ApiUnprocessableEntityResponse(DefaultResponse.unprocessableEntity)
-  @ApiParam({
-    type: 'string',
-    name: 'id',
-    description: 'Id of user to update',
-    example: '2c287ae8-ab38-4681-b3f7-2295c9402eeb',
-  })
-  async updateUser(@Param('id') id: string, @Body() payload: UpdateUserDto) {
-    return this.userService.updateUser(id, payload);
+  async updateUser(@User() user: UserDto, @Body() payload: UpdateUserDto) {
+    return this.userService.updateUser(user.id, payload);
   }
 
-  @Delete(':id')
+  @Delete()
   @ApiNotFoundResponse(DefaultResponse.notFound)
   @ApiUnauthorizedResponse(DefaultResponse.unauthorized)
   @ApiUnprocessableEntityResponse(DefaultResponse.unprocessableEntity)
@@ -110,8 +71,8 @@ export class UserController {
     description: 'Id of user to delete',
     example: '2c287ae8-ab38-4681-b3f7-2295c9402eeb',
   })
-  async deleteUser(@Param('id') id: string) {
-    return this.userService.deleteUser(id);
+  async deleteUser(@User() user: UserDto) {
+    return this.userService.deleteUser(user.id);
   }
 
   @Post('/upload-image')

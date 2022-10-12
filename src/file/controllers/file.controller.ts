@@ -1,8 +1,11 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from '@/user/guards/jwt.guard';
+import { Controller, Get, Param, Res, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FileService } from '../providers/file.service';
 
 @ApiTags('Files')
+@UseGuards(JwtGuard)
+@ApiBearerAuth('jwt')
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
