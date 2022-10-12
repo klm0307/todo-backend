@@ -4,10 +4,8 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Patch,
   Post,
-  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -16,9 +14,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiConflictResponse,
   ApiConsumes,
-  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
@@ -26,11 +22,10 @@ import {
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
   ApiBearerAuth,
+  ApiHeader,
 } from '@nestjs/swagger';
 import { UserService } from '../providers/user.service';
-import { FilterUserDto } from '../dto/filter-user.dto';
 import { UserDto } from '../dto/user.dto';
-import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { DefaultResponse } from '../../shared/responses/default.response';
 import { FileInterceptor } from '@nestjs/platform-express';

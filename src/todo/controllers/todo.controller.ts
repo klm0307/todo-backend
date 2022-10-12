@@ -15,7 +15,6 @@ import { UpdateTodoDto } from '../dto/update-todo.dto';
 import { TodoService } from '../providers/todo.service';
 import { FilterTodoDto } from '../dto/filter-todo.dto';
 import { TodoDto } from '../dto/todo.dto';
-import { CreateSubtaskDto } from '../dto/create-subtask.dto';
 import { User } from '@/user/decorators/user.decorator';
 import { UserDto } from '@/user/dto/user.dto';
 import { JwtGuard } from '@/user/guards/jwt.guard';
@@ -37,7 +36,7 @@ export class TodoController {
     @User() user: UserDto,
     @Param('id')
     todoId: string,
-    @Body() payload: CreateSubtaskDto,
+    @Body() payload: CreateTodoDto,
   ) {
     return this.todoService.createTodo({ ...payload, userId: user.id, todoId });
   }

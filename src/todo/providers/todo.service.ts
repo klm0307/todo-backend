@@ -11,11 +11,10 @@ import { TodoDto } from '../dto/todo.dto';
 import { FilterTodoDto } from '../dto/filter-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 import { Prisma } from '@prisma/client';
-import { CreateSubtaskDto } from '../dto/create-subtask.dto';
 
-type PartialFilter = Partial<FilterTodoDto>;
 type TodoId = { todoId: string };
 type UserId = { userId: string };
+type PartialFilter = Partial<FilterTodoDto & UserId>;
 
 @Injectable()
 export class TodoService {

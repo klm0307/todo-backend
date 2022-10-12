@@ -4,6 +4,8 @@ import * as Joi from '@hapi/joi';
 import { NodeEnv } from './environment/node-env.enum';
 import { AppLoggerService } from './logger/logger.service';
 import { PrismaService } from './prisma/prisma.service';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import * as path from 'path';
 
 const config: ConfigModuleOptions = {
   isGlobal: true,
@@ -17,7 +19,17 @@ const config: ConfigModuleOptions = {
 
 @Global()
 @Module({
-  imports: [ConfigModule.forRoot(config)],
+  imports: [
+    ConfigModule.forRoot(config),
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(`${process.cwd()}/dist/app-config`, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [AcceptLanguageResolver],
+    }),
+  ],
   providers: [AppLoggerService, PrismaService],
   exports: [AppLoggerService, PrismaService],
 })

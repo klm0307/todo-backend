@@ -2,7 +2,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EnvVariables } from '../../app-config/environment/env-variables.enum';
-import { UserService } from '../providers/user.service';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserDto } from '../dto/user.dto';
 import { AuthService } from '../providers/auth.service';

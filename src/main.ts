@@ -36,10 +36,11 @@ async function bootstrap() {
     .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerOptions);
+
   SwaggerModule.setup(`/${prefix}/doc`, app, swaggerDocument);
 
   await app.listen(port);
 
-  logger.log(`🚀 Api run on http://localhost:${port}/${prefix}`);
+  logger.log(`🚀 Todo api run on http://localhost:${port}/${prefix}`);
 }
 bootstrap();

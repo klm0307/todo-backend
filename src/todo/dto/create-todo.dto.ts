@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Todo, TodoStatus } from '@prisma/client';
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateTodoDto implements Partial<Todo> {
   @ApiProperty({ description: 'Description of todo', example: '' })
@@ -13,14 +19,15 @@ export class CreateTodoDto implements Partial<Todo> {
     description: 'Status of todo',
     example: TodoStatus.TODO,
   })
-  @IsString()
+  @IsEnum(TodoStatus)
   status: TodoStatus;
 
   @ApiPropertyOptional({
     description: 'Expiration at of todo',
-    example: '',
+    example: null,
     default: null,
   })
+  @ValidateIf((value) => value && value.length > 0)
   @IsDateString()
   @IsOptional()
   expiredAt?: Date;
