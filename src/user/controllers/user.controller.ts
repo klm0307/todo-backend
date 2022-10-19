@@ -22,15 +22,14 @@ import {
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
   ApiBearerAuth,
-  ApiHeader,
 } from '@nestjs/swagger';
 import { UserService } from '../providers/user.service';
 import { UserDto } from '../dto/user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { DefaultResponse } from '../../shared/responses/default.response';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from '../guards/jwt.guard';
 import { User } from '../decorators/user.decorator';
+import { DefaultResponse } from '@shared/responses/default.response';
 
 @ApiTags('Users')
 @UseGuards(JwtGuard)

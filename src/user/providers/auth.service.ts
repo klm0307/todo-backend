@@ -9,9 +9,9 @@ import { compare } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../strategies/jwt.strategy';
-import { EnvVariables } from '../../app-config/environment/env-variables.enum';
 import { TokenDto, TokenResponseDto } from '../dto/token.dto';
 import { I18nRequestScopeService } from 'nestjs-i18n';
+import { EnvVariables } from '@config/environment/env-variables.enum';
 
 @Injectable()
 export class AuthService {

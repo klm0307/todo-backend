@@ -6,15 +6,16 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { AppLoggerService } from '@config/logger/logger.service';
-import { PrismaService } from '@/app-config/prisma/prisma.service';
+import { PrismaService } from '@config/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { UserDto } from '../dto/user.dto';
 import { FilterUserDto } from '../dto/filter-user.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { FileService } from '../../file/providers/file.service';
 import { FileNamespace } from '@/storage/enum/file-namespace.enum';
 import { hash } from 'bcrypt';
+import { FileService } from '@/file/providers/file.service';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 type PartialFilter = Partial<FilterUserDto>;
 
@@ -26,6 +27,7 @@ export class UserService {
     private readonly logger: AppLoggerService,
     private readonly prisma: PrismaService,
     private readonly fileService: FileService,
+    private readonly i18n: I18nRequestScopeService,
   ) {}
 
   async findAllUsers(query: PartialFilter = {}): Promise<UserDto[]> {
@@ -71,7 +73,9 @@ export class UserService {
       return users;
     } catch (error) {
       throw new BadRequestException(
-        `An error occur when try to find all users`,
+        this.i18n.translate('user.errors.general', {
+          args: { name: this.findAllUsers.name },
+        }),
       );
     }
   }
@@ -80,7 +84,9 @@ export class UserService {
     const [user] = await this.findAllUsers({ id });
 
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
+      throw new NotFoundException(
+        this.i18n.translate('user.errors.not_found', { args: { id } }),
+      );
     }
 
     return user;
@@ -97,10 +103,14 @@ export class UserService {
       payload,
     };
 
-    const exist = await this.findUserByEmail(payload.email);
+    const { email } = payload;
+
+    const exist = await this.findUserByEmail(email);
 
     if (exist) {
-      throw new ConflictException(`User with id ${exist.id} already exist`);
+      throw new ConflictException(
+        this.i18n.translate('user.errors.conflict', { args: { email } }),
+      );
     }
 
     try {
@@ -121,7 +131,9 @@ export class UserService {
     } catch (error) {
       this.logger.customError(error);
       throw new UnprocessableEntityException(
-        `An error occur when try to create user with email ${payload.email}`,
+        this.i18n.translate('user.errors.unprocessable.create', {
+          args: { email },
+        }),
       );
     }
   }
@@ -152,7 +164,9 @@ export class UserService {
       return user;
     } catch (error) {
       throw new UnprocessableEntityException(
-        `An error occur when try to update user with id ${id}`,
+        this.i18n.translate('user.errors.unprocessable.update', {
+          args: { id },
+        }),
       );
     }
   }
@@ -182,7 +196,9 @@ export class UserService {
       return user;
     } catch (error) {
       throw new UnprocessableEntityException(
-        `An error occur when try to delete user with id ${id}`,
+        this.i18n.translate('user.errors.unprocessable.delete', {
+          args: { id },
+        }),
       );
     }
   }
