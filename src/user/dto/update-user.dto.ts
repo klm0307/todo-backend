@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { User } from '@prisma/client';
+import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto implements Partial<User> {
@@ -29,4 +30,14 @@ export class UpdateUserDto implements Partial<User> {
   @IsNotEmpty()
   @IsOptional()
   photoUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'User password to update(optional)',
+    example: 'randowmPass',
+  })
+  @Exclude()
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  password?: string;
 }

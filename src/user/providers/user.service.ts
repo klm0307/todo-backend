@@ -16,8 +16,10 @@ import { FileNamespace } from '@/storage/enum/file-namespace.enum';
 import { hash } from 'bcrypt';
 import { FileService } from '@/file/providers/file.service';
 import { I18nRequestScopeService } from 'nestjs-i18n';
+import { MailerService } from '@nestjs-modules/mailer';
 
 type PartialFilter = Partial<FilterUserDto>;
+type PartialUpdateUser = Partial<UpdateUserDto>;
 
 @Injectable()
 export class UserService {
@@ -28,6 +30,7 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly fileService: FileService,
     private readonly i18n: I18nRequestScopeService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async findAllUsers(query: PartialFilter = {}): Promise<UserDto[]> {
@@ -123,6 +126,15 @@ export class UserService {
         data: { ...payload, password: await hash(payload.password, 10) },
       });
 
+      await this.mailerService.sendMail({
+        to: payload.email,
+        subject: 'Change password',
+        template: 'new-user.hbs',
+        context: {
+          name: payload.name,
+        },
+      });
+
       this.logger.customLog(this.context, {
         context,
         message: `User created with id ${user.id}`,
@@ -138,7 +150,7 @@ export class UserService {
     }
   }
 
-  async updateUser(id: string, payload: UpdateUserDto): Promise<UserDto> {
+  async updateUser(id: string, payload: PartialUpdateUser): Promise<UserDto> {
     const context = {
       method: this.createUser.name,
       payload,

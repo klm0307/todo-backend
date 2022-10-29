@@ -3,6 +3,16 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "assets": [{ "include": "app-config/i18n/**/*", "watchAssets": true }]
+    "assets": [{ "include": "app-config/i18n/**/*", "watchAssets": true },{"include":"email/templates/**/*","watchAssets":true}],
+    "plugins": [
+      {
+        "name": "@nestjs/swagger/plugin",
+        "options": {
+          "controllerFileNameSuffix": [".controller.ts"],
+          "dtoFileNameSuffix": [".dto.ts", ".command.ts"],
+          "classValidatorShim": true
+        }
+      }
+    ]
   }
 }
