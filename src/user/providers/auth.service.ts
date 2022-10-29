@@ -11,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../strategies/jwt.strategy';
 import { EnvVariables } from '../../app-config/environment/env-variables.enum';
 import { TokenDto, TokenResponseDto } from '../dto/token.dto';
+import { MailerService } from '@nestjs-modules/mailer';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async login(payload: LoginDto): Promise<TokenResponseDto> {
@@ -59,5 +62,61 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
     return user;
+  }
+
+  async resetPassword(email: string): Promise<boolean> {
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    /*  const newPassword = Math.random().toString(36).slice(-8);
+
+    const hashedPassword = await hash(newPassword, 10);
+
+    await this.userService.updateUser(user.id, {
+      password: hashedPassword,
+    }); */
+
+    const token = this.createToken({ id: user.id });
+
+    const url = `${this.config.get(
+      EnvVariables.FRONTEND_URL,
+    )}/auth/change-password/${email}/${token}`;
+
+    const emailResponse = await this.mailerService.sendMail({
+      to: email,
+      subject: 'Reset password',
+      template: 'reset-password.hbs',
+      context: {
+        name: user.name,
+        url,
+      },
+    });
+
+    return emailResponse.accepted.length > 0;
+  }
+
+  async changePassword(payload: ChangePasswordDto): Promise<boolean> {
+    const { token, newPassword } = payload;
+    const user = await this.validateUser(token);
+
+    const hashedPassword = await hash(newPassword, 10);
+
+    await this.userService.updateUser(user.id, {
+      password: hashedPassword,
+    });
+
+    const emailResponse = await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Change password',
+      template: 'change-password.hbs',
+      context: {
+        name: user.name,
+      },
+    });
+
+    return emailResponse.accepted.length > 0;
   }
 }
