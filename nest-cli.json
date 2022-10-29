@@ -3,6 +3,7 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
+    "assets": [{ "include": "app-config/i18n/**/*", "watchAssets": true },{"include":"email/templates/**/*","watchAssets":true}],
     "plugins": [
       {
         "name": "@nestjs/swagger/plugin",
@@ -12,8 +13,6 @@
           "classValidatorShim": true
         }
       }
-    ],
-    "assets": ["**/*.hbs"],
-    "watchAssets": true
+    ]
   }
 }

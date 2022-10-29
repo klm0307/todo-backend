@@ -11,11 +11,11 @@ import { TodoDto } from '../dto/todo.dto';
 import { FilterTodoDto } from '../dto/filter-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 import { Prisma } from '@prisma/client';
-import { CreateSubtaskDto } from '../dto/create-subtask.dto';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
-type PartialFilter = Partial<FilterTodoDto>;
 type TodoId = { todoId: string };
 type UserId = { userId: string };
+type PartialFilter = Partial<FilterTodoDto & UserId>;
 
 @Injectable()
 export class TodoService {
@@ -24,7 +24,9 @@ export class TodoService {
   constructor(
     private readonly logger: AppLoggerService,
     private readonly prisma: PrismaService,
+    private readonly i18n: I18nRequestScopeService,
   ) {}
+
   async createTodo(
     payload: (CreateTodoDto & UserId) | (CreateTodoDto & TodoId & UserId),
   ): Promise<TodoDto> {
@@ -53,7 +55,7 @@ export class TodoService {
     } catch (error) {
       this.logger.customError(error);
       throw new UnprocessableEntityException(
-        `An error occur when try to create todo`,
+        this.i18n.translate('todo.errors.unprocessable.create'),
       );
     }
   }
@@ -91,7 +93,9 @@ export class TodoService {
     } catch (error) {
       this.logger.customError(error);
       throw new UnprocessableEntityException(
-        `An error occur when try to update todo`,
+        this.i18n.translate('todo.errors.unprocessable.update', {
+          args: { id },
+        }),
       );
     }
   }
@@ -99,7 +103,9 @@ export class TodoService {
   async findTodoById(id: string) {
     const [todo] = await this.findAllTodos({ id });
     if (!todo) {
-      throw new NotFoundException(`Todo with id ${id} not found`);
+      throw new NotFoundException(
+        this.i18n.translate('todo.errors.not_found', { args: { id } }),
+      );
     }
     return todo;
   }
@@ -142,8 +148,8 @@ export class TodoService {
       return todos;
     } catch (error) {
       this.logger.customError(error);
-      throw new BadRequestException(
-        `An error occur when try to find all users`,
+      throw new UnprocessableEntityException(
+        this.i18n.translate('todo.errors.general'),
       );
     }
   }
@@ -173,7 +179,9 @@ export class TodoService {
       return todo;
     } catch (error) {
       throw new UnprocessableEntityException(
-        `An error occur when try to delete user with id ${id}`,
+        this.i18n.translate('todo.errors.unprocessable.delete', {
+          args: { id },
+        }),
       );
     }
   }

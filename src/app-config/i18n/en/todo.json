@@ -1,0 +1,11 @@
+{
+  "errors": {
+    "general": "An error occurs when try access to todo resource {name}",
+    "not_found": "Todo with id {id} not found",
+    "unprocessable": {
+      "create": "An error occur when try to create todo",
+      "update": "An error occur when try to update todo with id {id}",
+      "delete": "An error occur when try to delete todo with id {id}"
+    }
+  }
+}

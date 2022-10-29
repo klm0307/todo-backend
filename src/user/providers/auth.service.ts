@@ -9,8 +9,9 @@ import { compare, hash } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../strategies/jwt.strategy';
-import { EnvVariables } from '../../app-config/environment/env-variables.enum';
 import { TokenDto, TokenResponseDto } from '../dto/token.dto';
+import { I18nRequestScopeService } from 'nestjs-i18n';
+import { EnvVariables } from '@config/environment/env-variables.enum';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 
@@ -20,6 +21,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly i18n: I18nRequestScopeService,
     private readonly mailerService: MailerService,
   ) {}
 
@@ -28,13 +30,13 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(email);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(this.i18n.translate('auth.not_found'));
     }
 
     const validatePassword = await compare(password, user.password);
 
     if (!validatePassword) {
-      throw new UnauthorizedException('Password is not valid');
+      throw new UnauthorizedException(this.i18n.translate('auth.unauthorized'));
     }
 
     const signedToken = this.createToken(user);
@@ -59,7 +61,7 @@ export class AuthService {
   async validateUser(userId: string): Promise<any> {
     const user = await this.userService.findUserById(userId);
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException(this.i18n.translate('auth.unauthorized'));
     }
     return user;
   }

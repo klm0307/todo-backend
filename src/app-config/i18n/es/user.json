@@ -1,0 +1,12 @@
+{
+  "errors": {
+    "general": "An error occurs when try access to user resource {name}",
+    "not_found": "User with id {id} not found",
+    "conflict": "User with email {email} already exist",
+    "unprocessable": {
+      "create": "An error occur when try to create user with email {email}",
+      "update": "An error occur when try to update user with id {id}",
+      "delete": "An error occur when try to delete user with id {id}"
+    }
+  }
+}
