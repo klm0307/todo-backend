@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../strategies/jwt.strategy';
 import { TokenDto, TokenResponseDto } from '../dto/token.dto';
-import { I18nRequestScopeService } from 'nestjs-i18n';
+import { I18nService } from 'nestjs-i18n';
 import { EnvVariables } from '@config/environment/env-variables.enum';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ChangePasswordDto } from '../dto/change-password.dto';
@@ -21,7 +21,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
-    private readonly i18n: I18nRequestScopeService,
+    private readonly i18n: I18nService,
     private readonly mailerService: MailerService,
   ) {}
 

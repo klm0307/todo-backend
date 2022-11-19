@@ -11,7 +11,7 @@ import { TodoDto } from '../dto/todo.dto';
 import { FilterTodoDto } from '../dto/filter-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 import { Prisma } from '@prisma/client';
-import { I18nRequestScopeService } from 'nestjs-i18n';
+import { I18nService } from 'nestjs-i18n';
 
 type TodoId = { todoId: string };
 type UserId = { userId: string };
@@ -24,7 +24,7 @@ export class TodoService {
   constructor(
     private readonly logger: AppLoggerService,
     private readonly prisma: PrismaService,
-    private readonly i18n: I18nRequestScopeService,
+    private readonly i18n: I18nService,
   ) {}
 
   async createTodo(

@@ -15,7 +15,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { FileNamespace } from '@/storage/enum/file-namespace.enum';
 import { hash } from 'bcrypt';
 import { FileService } from '@/file/providers/file.service';
-import { I18nRequestScopeService } from 'nestjs-i18n';
+import { I18nService } from 'nestjs-i18n';
 import { MailerService } from '@nestjs-modules/mailer';
 
 type PartialFilter = Partial<FilterUserDto>;
@@ -29,7 +29,7 @@ export class UserService {
     private readonly logger: AppLoggerService,
     private readonly prisma: PrismaService,
     private readonly fileService: FileService,
-    private readonly i18n: I18nRequestScopeService,
+    private readonly i18n: I18nService,
     private readonly mailerService: MailerService,
   ) {}
 
